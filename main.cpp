@@ -1,26 +1,64 @@
+#include <iostream>
 #include "closed_form.hpp"
+#include "BS_Fixed.hpp"
+#include "VanillaOption.hpp"
+#include "BS_Param.hpp"
+#include "CN_Scheme.hpp"
 
-// Guidelines:
-//
-// 1] Equation
-// Even if the volatility and the rate are constant in the BS model,
-// we can prove that, under certain assumptions, we can use the same
-// PDE equation with volatility surface and rate curves. We could also
-// want to take into account the repo (even if it could theoretically
-// be part of the r factor). Therefore, it is more generic to solve
-// the following generic equation;
-// df/dt = a(x,t)d2f/dx2 + b(x,t)df/dx + c(x, t)f + d(x, t).
-// The pricer should ask the coefficients a, b, c and d to an
-// abstract class that will be inherited by classes implementing
-// different models.
-// 
-// 2] Payoff
-// The pricer should be able to price exotic options, such as
-// barriers or asian options. To do so, the pricer must be able
-// to call an external function between each step. Define an API
-// that allows to register a function or an abstract class modeling
-// a payoff.
-int main(int argc, const char * argv[])
+
+namespace dauphine {
+	void price()
+	{
+		static double sigma = 0.20;
+		static double spot = 100.;
+		static double T = 0.0833;
+		static double strike = 100;
+		static double r = 0.;
+
+		cout << "BS Closed Form Call Price: " << bs_price(spot, strike, sigma, T, true) << endl;
+
+		BSModel Model(spot, r, sigma);
+
+		double low = 0.0, upper = 2.0 * spot;
+		Put EuropeanPut(strike, T, low, upper);
+		Call EuropeanCall(strike, T, low, upper);
+
+		int imax = 200, jmax = 2000;
+
+		BS_Param BSPDE(&Model, &EuropeanPut);
+		BS_Param BSPDE2(&Model, &EuropeanCall);
+
+		//Theta de la méthode Crank Nickolson:
+		double theta = 0.5;
+
+		CN_Scheme Method(&BSPDE, imax, jmax, theta);
+		CN_Scheme Method2(&BSPDE2, imax, jmax, theta);
+
+		Method.SolvePDE();
+		Method2.SolvePDE();
+
+
+		cout << "Put Price = " << Method.v(0.0, spot) << endl;
+		cout << "Call Price = " << Method2.v(0.0, spot) << endl;
+
+		double DeltaCall_value = EuropeanCall.DeltaCall(spot, strike, r, sigma, T);
+		double GammaCall_value = EuropeanCall.GammaCall(spot, strike, r, sigma, T);
+		double VegaCall_value = EuropeanCall.VegaCall(spot, strike, r, sigma, T);
+		double ThetaCall_value = EuropeanCall.ThetaCall(spot, strike, r, sigma, T);
+
+
+		cout << "Call delta: " << DeltaCall_value << endl;
+		cout << "Call gamma: " << GammaCall_value << endl;
+		cout << "Call vega: " << VegaCall_value << endl;
+		cout << "Call theta: " << ThetaCall_value << endl;
+
+	}
+
+}
+
+int main()
 {
-    return 0;
+	dauphine::price();
+
+	return 0;
 }
