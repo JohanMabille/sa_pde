@@ -3,6 +3,7 @@
 #include <vector>
 #include "PDE.hpp"
 
+// please, no!
 using namespace std;
 typedef vector<double> Vector;
 

@@ -15,6 +15,8 @@ class BS_Param: public PDE
       BS_Param(BSModel* PtrModel_,VanillaOption* PtrVanillaOption_);
       ~BS_Param();
 
+      // using override would help to see that these
+      // methods are actually virtual
       double a(double t, double z);
       double b(double t, double z);
       double c(double t, double z);

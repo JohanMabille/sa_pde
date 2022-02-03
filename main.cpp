@@ -9,6 +9,7 @@
 namespace dauphine {
 	void price()
 	{
+            // Why static?
 		static double sigma = 0.20;
 		static double spot = 100.;
 		static double T = 0.0833;

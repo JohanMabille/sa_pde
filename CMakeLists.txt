@@ -21,9 +21,14 @@ if(MSVC)
 endif()
 
 set(PDE_SOLVER_SRCS
+    BS_Param.cpp
     closed_form.hpp
     closed_form.cpp
+    FiniteDiff.cpp
+    Implicit_Scheme.cpp
     main.cpp
+    Matrix_Operators.cpp
+    VanillaOption.cpp
 )
 
 set(PDE_SOLVER_TARGET pde_solver)
