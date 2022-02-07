@@ -1,7 +1,11 @@
 #ifndef BSModelFixed_HPP
 #define BSModelFixed_HPP
 
+// Ultimate evil!!! and totally useless here since you
+// don't use any std type
 using namespace std;
+
+// no need for these includes
 #include <vector>
 #include <cstdlib>
 

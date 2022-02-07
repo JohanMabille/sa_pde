@@ -10,12 +10,16 @@
 
 #include "BS_Fixed.hpp"
 
+// Code organization: boundary conditions should not be part
+// of the vanilla option, they are specific to the finite-difference
+// method, not the product
 class VanillaOption
 {
     protected:
         double T, low, upper;
     public:
       
+        // Entity semantic is missing
       virtual double Payoff(double z)=0;
       virtual double UpperBdCond
          (BSModel* PtrModel, double t)=0;
@@ -27,6 +31,8 @@ class VanillaOption
       double get_upper() const;
 
 
+      // These functions are utility function that should be
+      // free functions, not members of this class
        // Computing Normal probability density function
       double norm_pdf(const double& x) {
           return (1.0 / pow(2 * M_PI, 0.5)) * exp(-0.5 * x * x);

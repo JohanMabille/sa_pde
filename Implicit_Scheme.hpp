@@ -7,6 +7,7 @@
 class Implicit_Scheme: public FiniteDiff
 {
    public:
+       // Entity semantic is missing
       Implicit_Scheme(PDE* PtrPDE_,int imax_,int jmax_)
          : FiniteDiff(PtrPDE_, imax_, jmax_){}
 
